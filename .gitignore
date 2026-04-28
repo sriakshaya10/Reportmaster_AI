@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.venv/
+venv/
+
+# Env
+.env
+
+# Data artifacts
+data/index/*.npy
+data/index/*.json
+!data/index/.gitkeep
+!data/uploads/.gitkeep
+
+# OS/editor
+.vscode/
+.DS_Store
+Thumbs.db

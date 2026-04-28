@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ReportMaster AI</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>📊 ReportMaster AI</h1>
+        <p class="tagline">Financial Reporting Intelligence</p>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-tab="upload">
+          <span class="icon">📄</span> Upload Manual
+        </button>
+        <button class="nav-btn" data-tab="ask">
+          <span class="icon">❓</span> Ask Question
+        </button>
+        <button class="nav-btn" data-tab="info">
+          <span class="icon">ℹ️</span> About
+        </button>
+      </nav>
+    </div>
+
+    <main class="main-content">
+      <!-- Upload Tab -->
+      <section id="upload" class="tab-content active">
+        <div class="section-header">
+          <h2>Upload Financial Manual</h2>
+          <p>Select a PDF document to index and make it searchable</p>
+        </div>
+
+        <div class="upload-zone" id="upload-zone">
+          <input
+            type="file"
+            id="pdf-file"
+            accept="application/pdf"
+            hidden
+          />
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <h3>Drop PDF here or click to select</h3>
+          <p class="small">Maximum file size: 50MB</p>
+        </div>
+
+        <div id="file-name" class="file-name hidden"></div>
+        <button id="upload-btn" class="btn btn-primary btn-lg" disabled>
+          Upload & Index
+        </button>
+        <div id="upload-status" class="status-message"></div>
+        <div id="upload-progress" class="progress hidden">
+          <div class="progress-bar"></div>
+        </div>
+      </section>
+
+      <!-- Ask Tab -->
+      <section id="ask" class="tab-content">
+        <div class="section-header">
+          <h2>Ask a Question</h2>
+          <p>Query your indexed financial manuals</p>
+        </div>
+
+        <div class="query-box">
+          <textarea
+            id="question"
+            placeholder="e.g., What is the revenue recognition rule? Or, Explain the depreciation policy..."
+            rows="4"
+            maxlength="1000"
+          ></textarea>
+          <div class="char-count">
+            <span id="char-count">0</span>/1000
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="control-group">
+            <label for="topk">Results to retrieve:</label>
+            <select id="topk">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="8">8</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+          <button id="ask-btn" class="btn btn-primary btn-lg">
+            <span class="spinner hidden" id="spinner"></span> Ask AI
+          </button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="results hidden">
+          <div class="answer-box">
+            <h3>Answer</h3>
+            <div id="answer" class="answer-text"></div>
+            <div id="grounded-badge" class="badge badge-success hidden">✓ Grounded in source</div>
+          </div>
+
+          <div class="sources-box">
+            <h3>📚 Source References</h3>
+            <div id="sources" class="sources-list"></div>
+          </div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <p>No documents indexed yet. Upload a manual first.</p>
+        </div>
+      </section>
+
+      <!-- Info Tab -->
+      <section id="info" class="tab-content">
+        <div class="section-header">
+          <h2>About ReportMaster AI</h2>
+        </div>
+
+        <div class="info-card">
+          <h3>🤖 What is RAG?</h3>
+          <p>Retrieval-Augmented Generation combines document search with AI to generate accurate, grounded answers from your internal manuals.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>📋 How to use</h3>
+          <ol>
+            <li>Upload your financial reporting manual (PDF)</li>
+            <li>Wait for indexing to complete</li>
+            <li>Ask questions in natural language</li>
+            <li>Get answers backed by your documents</li>
+          </ol>
+        </div>
+
+        <div class="info-card">
+          <h3>🔒 Privacy</h3>
+          <p>All documents are stored locally. No data is sent to external servers unless you configure an LLM API key.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>📡 API Documentation</h3>
+          <p>Interactive API docs available at <a href="/docs" target="_blank">/docs</a></p>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js" type="module"></script>
+  </body>
+</html>
