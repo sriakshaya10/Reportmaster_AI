@@ -3,20 +3,31 @@ from pathlib import Path
 from pypdf import PdfReader
 
 
+
 class DocumentProcessor:
     def __init__(self, chunk_size: int = 800, chunk_overlap: int = 120) -> None:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
 
     def extract_chunks(self, file_path: Path) -> list[dict]:
-        reader = PdfReader(str(file_path))
+        suffix = file_path.suffix.lower()
+        text_blocks: list[tuple[int, str]] = []  # (page_or_section, text)
+
+        if suffix == ".pdf":
+            reader = PdfReader(str(file_path))
+            for page_index, page in enumerate(reader.pages, start=1):
+                text = (page.extract_text() or "").strip()
+                if not text:
+                    continue
+                text_blocks.append((page_index, text))
+
+
+        else:
+            # Unsupported file type
+            return []
+
         chunks: list[dict] = []
-
-        for page_index, page in enumerate(reader.pages, start=1):
-            text = (page.extract_text() or "").strip()
-            if not text:
-                continue
-
+        for page_index, text in text_blocks:
             page_chunks = self._chunk_text(text)
             for idx, chunk_text in enumerate(page_chunks):
                 chunks.append(

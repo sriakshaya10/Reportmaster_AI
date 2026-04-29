@@ -1,0 +1,177 @@
+[
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c0",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "ARTIFICIAL INTELLIGENCE. PROJECT REPORT 20, APRIL 2026 1\nFace Recognition for Login Authentication\nVineela Gujjarlapudi, AP23110011644, Jai Manish Kumar Bikkina , AP2311001073, Gangadhar Bandaru,\nAP23110010344,\nAbstract\u2014This project presents a comprehensive face\nrecognition-based authentication system that integrates biometric\nand traditional password-based security mechanisms for en-\nhanced user verification. The objective is to develop a secure,\nuser-friendly web application that combines facial recognition\ntechnology with liveness detection to prevent spoofing attacks and\nunauthorized access. The system employs OpenCV for image pro-\ncessing, dlib\u2019s 128-dimensional ResNet-based face descriptor for\nface encoding, and Flask as the backend framework, with SQLite\nfor credential storage. Duri",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c1",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "et-based face descriptor for\nface encoding, and Flask as the backend framework, with SQLite\nfor credential storage. During registration, users capture a live\nfacial image via browser camera; the system extracts a unique\nface encoding (128-d vector) and stores it alongside a hashed\npassword. For authentication, users submit both credentials and\na live face capture while responding to randomly assigned liveness\nchallenges (blink or nod). The system validates the liveness\nresponse through eye aspect ratio and head position metrics\nextracted from sequential video frames, achieving robust anti-\nspoofing detection. Upon successful liveness verification, the login\nface is compared against the stored encoding using face distance\nmeasurements (threshold: 0.5), and access is granted only if\nboth pas",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c2",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "ed against the stored encoding using face distance\nmeasurements (threshold: 0.5), and access is granted only if\nboth password and face distance criteria are satisfied. Testing\nwith two registered users confirmed accurate face matching,\nsecure password hashing using scrypt, and effective liveness\nchallenge enforcement. The dashboard enables users to update\ntheir password and face profile post-authentication. Results\ndemonstrate that the integrated biometric-password approach\nsignificantly reduces unauthorized access risk while maintaining\nuser convenience.This project provides a practical foundation for\nmulti-factor biometric authentication systems and highlights the\nfeasibility of deploying facial recognition in web applications for\nenhanced cybersecurity.\nIndex Terms\u2014Face recognition, Bio",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c3",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "bility of deploying facial recognition in web applications for\nenhanced cybersecurity.\nIndex Terms\u2014Face recognition, Biometric authentication,\nLiveness detection, Face encoding, OpenCV , dlib, Password\nhashing, Anti-spoofing, Web security, Flask, SQLite, Eye aspect\nratio, Face distance metric\nI. INTRODUCTION\nW\nITH the exponential growth of digital transactions\nand the increasing sophistication of cyber threats,\ntraditional password-based authentication has become\ninsufficient for secure access control. Single-factor\nauthentication (username and password) falls victim to\nsocial engineering, phishing attacks, password reuse, and\nbrute-force attempts. Conversely, multi-factor authentication\n(MFA) combining something the user knows (password)\nwith something the user is (biometrics) provides su",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c4",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "r authentication\n(MFA) combining something the user knows (password)\nwith something the user is (biometrics) provides substantially\nstronger security postures. Among biometric modalities, face\nrecognition has emerged as a user-friendly, non-intrusive\ntechnology increasingly adopted in mobile devices, border\nsecurity, and enterprise access systems. However, face\nrecognition systems remain vulnerable to spoofing attacks\nusing printed photographs, video replays, and deepfakes.\nThis necessitates the integration of liveness detection\nmechanisms that verify the presence of a living person\nduring authentication. The objective of this work is to\ndevelop and validate a comprehensive face recognition-based\nauthentication system that combines password verification,\nfacial encoding matching, and liven",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c5",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "ve face recognition-based\nauthentication system that combines password verification,\nfacial encoding matching, and liveness detection to create\na robust, practical authentication framework suitable for\nweb-based applications.\nThe technological foundation of this project integrates\nseveral well-established libraries and frameworks. OpenCV\n4.10.0.84 serves as the primary image processing engine for\ncapturing, decoding, and manipulating video frames from\nbrowser-based camera streams. The face recognition library\n(version 1.3.0), built upon dlib, provides state-of-the-art face\ndetection using Histogram of Oriented Gradients (HOG) and\nface encoding using a ResNet-based 128-dimensional facial\ndescriptor. NumPy 2.1.2 handles numerical computations\nfor face distance calculations and liveness metri",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c6",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "ensional facial\ndescriptor. NumPy 2.1.2 handles numerical computations\nfor face distance calculations and liveness metric extraction.\nFlask 3.1.0 provides the web framework backend, while\nSQLite manages persistent storage of user credentials\nand face encodings. For password security, scrypt-based\nhashing (via werkzeug.security) replaces plaintext storage.\nAlternative approaches considered but not implemented\ninclude: (1) CNN-based face detection (more accurate but\ncomputationally expensive for browser environments), (2) iris\nrecognition (requires specialized hardware), (3) fingerprint\nmatching (incompatible with web-only deployment), and (4)\nbehavioral biometrics (less reliable than geometric biometrics).\nThe experimental methodology involved registering two\nuser subjects (Vineela and sria",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c7",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "liable than geometric biometrics).\nThe experimental methodology involved registering two\nuser subjects (Vineela and sriakshaya) through the system\u2019s\nregistration interface. During registration, each subject\nsubmitted a live facial capture via browser camera; the\nsystem extracted the 128-dimensional face encoding and\npaired it with a scrypt-hashed password for storage in\nthe SQLite database. Login authentication required users\nto provide both password and live camera capture while\nresponding to randomly assigned liveness challenges: either\na natural blink or a head nod motion. The system captured\nsix sequential frames at 220 millisecond intervals, extracting\nfacial landmarks, eye aspect ratios (EAR), and head position\nshifts (nod metric). Face distance was computed using\nEuclidean distance ",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p1_c8",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 1,
+    "text": "ks, eye aspect ratios (EAR), and head position\nshifts (nod metric). Face distance was computed using\nEuclidean distance between the login encoding and stored\nencoding (threshold: 0.5). Liveness validation thresholds\nwere empirically determined: for blink challenges, minimum\nEAR drop of 0.05 with minimum eye closure of 0.20; for\nnod challenges, minimum head position span of 0.11. Final\nauthentication required simultaneous satisfaction of password\nmatch, liveness verification, and face distance criteria.\nResults demonstrated successful authentication for both",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c0",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": "ARTIFICIAL INTELLIGENCE. PROJECT REPORT 20, APRIL 2026 2\nregistered users across multiple login attempts, with the\nsystem correctly rejecting invalid credentials and detecting\npresentation attacks. The integrated approach combining three\nindependent verification factors\u2014password, biometric match-\ning, and liveness detection\u2014provides a practical, deployable\nauthentication system suitable for web applications requiring\nheightened security. This work validates the feasibility of\nbrowser-based facial recognition combined with anti-spoofing\nmeasures, establishing a foundation for future multi-modal\nbiometric systems in web environments.\nII. MATERIALS ANDMETHODS\nThis section describes the experimental setup, system in-\ntegration, data acquisition process, and calculations used to\nimplement and e",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c1",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": "scribes the experimental setup, system in-\ntegration, data acquisition process, and calculations used to\nimplement and evaluate the face-recognition-based authenti-\ncation workflow. The objective was to build a secure login\npipeline that combines password verification, facial matching,\nand liveness validation to reduce spoofing riskKulkarni2015.\nA. Materials\nThe experiment used a standard laptop/desktop with\nan RGB camera for image capture. Software compo-\nnents included Python 3.11, Flask 3.1.0 (backend service),\nOpenCV 4.10.0.84 (image decoding and preprocessing),\nface-recognition 1.3.0 with dlib (face landmarks and 128-\ndimensional embeddings), NumPy 2.1.2 (numerical opera-\ntions), and SQLite (local persistence for user records). The\nweb interface was implemented with HTML, CSS, and\nJav",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c2",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": "pera-\ntions), and SQLite (local persistence for user records). The\nweb interface was implemented with HTML, CSS, and\nJavaScript for browser-side camera control and frame submis-\nsion.\nB. System Connection and Procedure\nThe system was connected in the following sequence:\ncamera stream\u2192browser capture module\u2192Flask server\n\u2192liveness and face-processing module\u2192SQLite lookup\u2192\nauthentication decision.\nRegistration was performed by capturing one live facial\nframe, extracting a single face embedding, hashing the user\npassword with scrypt, and storing the resulting data in the\ndatabase. During login, the user provided username and pass-\nword, while the client captured a short frame sequence for\nliveness and one frame for final face matching. A random\nchallenge (blink or nod) was assigned per session",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c3",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": " sequence for\nliveness and one frame for final face matching. A random\nchallenge (blink or nod) was assigned per session. Authenti-\ncation was granted only when all checks passed.\nC. Measurements\nThe following measurements were taken during each login\nattempt:\nEye geometry over sequential frames (for blink detection).\nNose-to-eye normalized vertical motion (for nod detection).\nEuclidean distance between login embedding and stored em-\nbedding. Final Boolean authentication outcome (accept/reject)\nfrom rule-based fusion.\nD. Calculations\nEye Aspect Ratio (EAR) for blink analysis was computed\nas:\nEAR =\u2225p2 \u2212p 6\u2225+\u2225p 3 \u2212p 5\u2225\n2\u2225p1 \u2212p 4\u2225 (1)\nwhere p1,. . . ,p6 are eye landmark points and denotes\nEuclidean norm.\nNormalized nod displacement was computed as:\nN= ynose \u2212y eye-mid\ndeye\n(2)\nwhere y nose is",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c4",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": "ts and denotes\nEuclidean norm.\nNormalized nod displacement was computed as:\nN= ynose \u2212y eye-mid\ndeye\n(2)\nwhere y nose is the nose-tip vertical coordinate, y eye-mid\nis the eye-midpoint vertical coordinate, and d eye\nis inter-eye distance.\nFace matching used embedding distance:\nD=\u2225elogin\u2212estored\u2225 2 (3)\nwhere e login and e stored are 128-D face embeddings.\nFinal access decision was:\nA=P\u2227L\u2227(D\u2264\u03c4)(4)\nwhere P is password-valid flag, L is liveness-valid flag, and T\n=0.5 is the face-match threshold. For this session, blink and\nnod thresholds were applied to the frame sequence, and only\nusers satisfying all constraints were authenticated.\nE. Result of Method Execution\nUsing this method, registered users were authenticated\nsuccessfully when password, liveness response, and facial\nsimilarity were all",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c5",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": "ethod, registered users were authenticated\nsuccessfully when password, liveness response, and facial\nsimilarity were all valid. Attempts with invalid credentials,\ninsufficient liveness evidence, or non-matching facial embed-\ndings were rejected. This confirms that the combined multi-\nfactor biometric pipeline is operational and suitable for secure\nweb-login experimentation.\nIII. RESULTS\nThe collected authentication outcomes are summarized in\nTable I. Accepted attempts satisfy the threshold condition\nD\u22640.50and pass liveness verification. Rejected attempts fail\neither liveness validation or the distance threshold condition.\nTABLE I: Authentication measurements for the session using\nthresholdD\u22640.50.\nAttempt UserDLiveness Decision\n1 Vineela 0.32 Pass Accept\n2 Manish 0.35 Pass Accept\n3 Vineela ",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p2_c6",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 2,
+    "text": "on using\nthresholdD\u22640.50.\nAttempt UserDLiveness Decision\n1 Vineela 0.32 Pass Accept\n2 Manish 0.35 Pass Accept\n3 Vineela 0.47 Pass Accept\n4 Manish 0.52 Pass Reject\n5 Vineela 0.41 Fail Reject\n6 Manish 0.49 Pass Accept\nFigure1 shows face distance versus attempt order (time\nsequence). In Fig.1, accepted points remain mostly below the\nthreshold line, while rejected points appear when the distance\nexceeds T=0.50. This indicates that the chosen threshold\nseparates matching and non-matching attempts effectively for\nthis session.",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c0",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "ARTIFICIAL INTELLIGENCE. PROJECT REPORT 20, APRIL 2026 3\nFig. 1: Face distance D D versus attempt index with threshold\n= 0.50 =0.50.\nLiveness was still a required verification factor in this\nexperiment. For each login, the user completed a challenge\n(blink or nod), and the backend accepted access only when\npassword verification, liveness validation, and face match were\nall satisfied. Therefore, even if a distance value was below\nthreshold, access could still be rejected when liveness failed.\nFigure 2 presents the developed web interface used during\nthe experiment (camera-based login page and workflow view),\nshowing the practical implementation of the authentication\npipeline.\n(a) Login page\n (b) Register page\nFig. 2: Web application interfaces used in the experiment.\nOverall, the combined m",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c1",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "ne.\n(a) Login page\n (b) Register page\nFig. 2: Web application interfaces used in the experiment.\nOverall, the combined method (password + liveness + face\nmatching) improves login reliability and reduces spoofing risk.\nThe strongest technical outcome is that access is granted only\nwhen all verification conditions are simultaneously satisfied.\nIV. DISCUSSION ANDSUMMARY\nThe primary objective of this experiment was to design\nand validate a secure web-based authentication system that\ncombines password verification, facial biometric matching,\nand liveness detection. This objective was achieved to a high\ndegree for the tested operating conditions. The implemented\npipeline consistently accepted valid users when all three\ncriteria were satisfied and rejected invalid or non-compliant\nattempts when e",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c2",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "tently accepted valid users when all three\ncriteria were satisfied and rejected invalid or non-compliant\nattempts when either password, liveness, or facial similarity\nfailed. This confirms that multi-factor fusion is more robust\nthan single-factor authentication.\nAn important result is the clear decision separation pro-\nduced by the face-distance threshold. In engineering terms,\nthe system exhibited goodclassification accuracyon the\nsession test attempts, with stable pass/fail behavior around the\nselected threshold T = 0.50. Theprecisionof decision-making\nimproved because a biometric match alone was not sufficient;\nthe liveness gate reduced spoof susceptibility. The temporal\nliveness signals (blink EAR variation and nod displacement\nspan) also demonstrated usefulmeasurement resolution, sin",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c3",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "ral\nliveness signals (blink EAR variation and nod displacement\nspan) also demonstrated usefulmeasurement resolution, since\nsmall frame-to-frame changes were captured and used in rule-\nbased classification.\nFrom a measurement perspective, reliability depends on\nacquisition quality (camera framing, illumination, motion blur,\nand face visibility). These factors influence embedding con-\nsistency and landmark stability, and therefore affect bothre-\npeatabilityandfalse decision rates. Even so, the present setup\nproduced operationally consistent outcomes for enrolled users\nin normal indoor conditions. Password handling via scrypt\nhashing further strengthened security by protecting credential\nconfidentiality in storage.\nThe experiment validates key principles from biometric\nsecurity theory: (1) te",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c4",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "ng credential\nconfidentiality in storage.\nThe experiment validates key principles from biometric\nsecurity theory: (1) template-space distance can be used as\na practical similarity metric for identity verification, (2) tem-\nporal physiological motion improves resistance to presentation\nattacks, and (3) logical AND fusion of heterogeneous factors\nimproves overall trust in authentication outcomes.\nApplications include secure login for academic portals,\ninternal enterprise dashboards, attendance and access control\nsystems, and lightweight identity verification for web services.\nRecommended future work includes larger-population testing,\nROC/EER-based threshold tuning, adaptive per-user thresh-\nolds, anti-deepfake challenge expansion, encrypted template\nstorage, and optional CNN/GPU acceleratio",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c5",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "e per-user thresh-\nolds, anti-deepfake challenge expansion, encrypted template\nstorage, and optional CNN/GPU acceleration for improved\nrobustness under varied pose and lighting conditions.\nAPPENDIXA\nSUPPORTINGEVIDENCE\nThis appendix includes the architecture diagram of the\ndeveloped face recognition and liveness-based authentication\nsystem. The figure summarizes the complete workflow from\nbrowser-side image capture to backend verification, database\nlookup, and final access decision.\nACKNOWLEDGMENT\nThe authors would like to thank the course instructor and\nlaboratory support staff for their guidance throughout this\nexperiment. The authors also acknowledge the open-source de-\nveloper communities behind Flask, OpenCV , facerecognition,\ndlib, and NumPy for providing the software tools used to\nde",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p3_c6",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 3,
+    "text": "\nveloper communities behind Flask, OpenCV , facerecognition,\ndlib, and NumPy for providing the software tools used to\ndesign and evaluate the authentication system.\nREFERENCES\n[1] Pallets Projects, \u201cFlask Documentation,\u201d Available:\nhttps://flask.palletsprojects.com/. Accessed: Apr. 19, 2026.",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p4_c0",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 4,
+    "text": "ARTIFICIAL INTELLIGENCE. PROJECT REPORT 20, APRIL 2026 4\nFig. 3: Architecture of the face recognition login authentication\nsystem.\n[2] OpenCV Team, \u201cOpenCV Documentation,\u201d Available:\nhttps://docs.opencv.org/. Accessed: Apr. 19, 2026.\n[3] A. Geitgey, \u201cface recognition: The world\u2019s simplest facial recognition\nAPI for Python and the command line,\u201d GitHub repository. Available:\nhttps://github.com/ageitgey/face recognition. Accessed: Apr. 19, 2026.\n[4] D. E. King, \u201cDlib-ml: A Machine Learning Toolkit,\u201dJournal of\nMachine Learning Research, vol. 10, pp. 1755\u20131758, 2009.\n[5] V . Kazemi and J. Sullivan, \u201cOne Millisecond Face Alignment with an\nEnsemble of Regression Trees,\u201d inProc. IEEE Conf. Computer Vision\nand Pattern Recognition (CVPR), 2014, pp. 1867\u20131874.\n[6] NumPy Developers, \u201cNumPy Documentat",
+    "document_id": "1e188762"
+  },
+  {
+    "chunk_id": "Face_Recognition_for_login_Report_p4_c1",
+    "source_file": "Face_Recognition_for_login_Report.pdf",
+    "page_number": 4,
+    "text": " IEEE Conf. Computer Vision\nand Pattern Recognition (CVPR), 2014, pp. 1867\u20131874.\n[6] NumPy Developers, \u201cNumPy Documentation,\u201d Available:\nhttps://numpy.org/doc/. Accessed: Apr. 19, 2026.\n[7] SQLite Consortium, \u201cSQLite Documentation,\u201d Available:\nhttps://www.sqlite.org/docs.html. Accessed: Apr. 19, 2026.\n[8] National Institute of Standards and Technology, \u201cDigital Identity\nGuidelines: Authentication and Lifecycle Management (NIST SP\n800-63B),\u201d Available: https://pages.nist.gov/800-63-3/sp800-63b.html.\nAccessed: Apr. 19, 2026.",
+    "document_id": "1e188762"
+  }
+]

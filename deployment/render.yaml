@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: reportmaster-backend
+    env: python
+    branch: main
+    # Install dependencies and start using gunicorn + uvicorn worker
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:$PORT --workers 1
+    plan: free
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: GROQ_API_KEY
+        # Set this value in Render's dashboard (do not store secret here)
+        value: ""
+      - key: FRONTEND_URL
+        value: ""
+      - key: ALLOW_ORIGIN
+        value: ""

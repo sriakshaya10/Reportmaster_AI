@@ -1,3 +1,4 @@
+// Mirror of the served static app.js — supports multi-file and multi-format uploads
 const API_PREFIX = '/api/v1';
 
 // DOM utilities
@@ -25,11 +26,43 @@ async function uploadFile(file) {
   return res.json();
 }
 
-async function askQuestion(question, top_k) {
+async function listDocuments() {
+  const res = await fetch(`${API_PREFIX}/documents?t=${Date.now()}`, {
+    method: 'GET',
+    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || 'Failed to list documents');
+  }
+
+  return res.json();
+}
+
+async function deleteDocument(documentId) {
+  const res = await fetch(`${API_PREFIX}/documents/${documentId}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || 'Delete failed');
+  }
+
+  return res.json();
+}
+
+async function askQuestion(question, top_k, documentId = null) {
+  const body = { question, top_k };
+  if (documentId) {
+    body.document_id = documentId;
+  }
+
   const res = await fetch(`${API_PREFIX}/query`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question, top_k }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
@@ -54,8 +87,76 @@ function initTabs() {
       // Update active tab content
       $$('.tab-content').forEach((tab) => tab.classList.remove('active'));
       $(`#${tabName}`).classList.add('active');
+
+      // Refresh documents list when opening ask tab
+      if (tabName === 'ask') {
+        loadAndDisplayDocuments();
+      }
     });
   });
+}
+
+// UI: Documents List
+async function loadAndDisplayDocuments() {
+  try {
+    const resp = await listDocuments();
+    const docList = $('#documents-list');
+    const docSelect = $('#document-select');
+    
+    if (!resp.documents || resp.documents.length === 0) {
+      docList.innerHTML = '<p class="empty-msg">No documents uploaded yet.</p>';
+      docSelect.innerHTML = '<option value="">All Documents</option>';
+      documentsIndexed = 0;
+      return;
+    }
+
+    documentsIndexed = resp.documents.length;
+
+    // Update documents list
+    docList.innerHTML = resp.documents.map(doc => {
+      const uploadDate = new Date(doc.uploaded_at * 1000).toLocaleString();
+      return `
+        <div class="document-item">
+          <div class="document-info">
+            <strong>📄 ${doc.filename}</strong>
+            <div class="document-meta">
+              ${doc.chunks_count} chunks • ${uploadDate}
+            </div>
+          </div>
+          <button class="btn-delete" data-doc-id="${doc.id}" title="Delete document">
+            ✕
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    // Add delete event listeners
+    $$('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const docId = btn.dataset.docId;
+        if (confirm('Delete this document? This cannot be undone.')) {
+          try {
+            await deleteDocument(docId);
+            await loadAndDisplayDocuments();
+          } catch (err) {
+            alert(`Delete failed: ${err.message}`);
+          }
+        }
+      });
+    });
+
+    // Update document selector
+    docSelect.innerHTML = '<option value="">All Documents</option>';
+    resp.documents.forEach(doc => {
+      const opt = document.createElement('option');
+      opt.value = doc.id;
+      opt.textContent = doc.filename;
+      docSelect.appendChild(opt);
+    });
+
+  } catch (err) {
+    console.error('Error loading documents:', err);
+  }
 }
 
 // UI: Upload zone
@@ -82,49 +183,62 @@ function initUploadZone() {
     zone.classList.remove('dragover');
     if (e.dataTransfer.files.length) {
       fileInput.files = e.dataTransfer.files;
-      handleFileSelected(e.dataTransfer.files[0]);
+      handleFilesSelected(e.dataTransfer.files);
     }
   });
 
   fileInput.addEventListener('change', (e) => {
     if (e.target.files.length) {
-      handleFileSelected(e.target.files[0]);
+      handleFilesSelected(e.target.files);
     }
   });
 
   uploadBtn.addEventListener('click', async () => {
-    const file = fileInput.files[0];
-    if (!file) {
-      setStatus(status, 'Pick a PDF file first.', 'error');
+    const files = Array.from(fileInput.files || []);
+    if (files.length === 0) {
+      setStatus(status, 'Pick one or more files first.', 'error');
       return;
     }
 
     uploadBtn.disabled = true;
-    setStatus(status, 'Uploading...', 'info');
+    setStatus(status, `Uploading ${files.length} file(s)...`, 'info');
     $('#upload-progress').classList.remove('hidden');
 
-    try {
-      const resp = await uploadFile(file);
-      documentsIndexed++;
-      setStatus(status, `✓ Indexed ${resp.chunks_indexed} chunks from ${resp.document_name}`, 'success');
-      fileInput.value = '';
-      fileName.classList.add('hidden');
-      uploadBtn.disabled = true;
-      $('#upload-progress').classList.add('hidden');
-    } catch (err) {
-      setStatus(status, `✗ ${err.message}`, 'error');
-      uploadBtn.disabled = false;
-      $('#upload-progress').classList.add('hidden');
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      try {
+        setStatus(status, `Uploading ${f.name} (${i + 1}/${files.length})...`, 'info');
+        const resp = await uploadFile(f);
+        setStatus(status, `✓ Indexed ${resp.chunks_indexed} chunks from ${resp.document_name}`, 'success');
+      } catch (err) {
+        setStatus(status, `✗ ${f.name}: ${err.message}`, 'error');
+      }
     }
+
+    fileInput.value = '';
+    fileName.classList.add('hidden');
+    uploadBtn.disabled = true;
+    $('#upload-progress').classList.add('hidden');
+
+    // Reload documents list
+    await loadAndDisplayDocuments();
   });
 
-  function handleFileSelected(file) {
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
-      setStatus(status, 'Only PDF files are supported.', 'error');
-      fileInput.value = '';
-      return;
+  function handleFilesSelected(files) {
+    const allowed = ['.pdf'];
+    const list = Array.from(files);
+    // Validate
+    for (const f of list) {
+      const name = f.name.toLowerCase();
+      if (!allowed.some(ext => name.endsWith(ext))) {
+        setStatus(status, `Unsupported file type: ${f.name}`, 'error');
+        fileInput.value = '';
+        return;
+      }
     }
-    fileName.textContent = `📄 ${file.name}`;
+
+    fileName.innerHTML = `<div style="margin-bottom: 8px;"><strong>${list.length} file${list.length > 1 ? 's' : ''} selected:</strong></div>` + 
+                         list.map(f => `<div style="margin-top: 4px; padding-left: 8px;">📄 ${f.name}</div>`).join('');
     fileName.classList.remove('hidden');
     uploadBtn.disabled = false;
     status.textContent = '';
@@ -136,6 +250,7 @@ function initQuery() {
   const textarea = $('#question');
   const askBtn = $('#ask-btn');
   const topK = $('#topk');
+  const docSelect = $('#document-select');
   const charCount = $('#char-count');
   const results = $('#results');
   const emptyState = $('#empty-state');
@@ -152,17 +267,20 @@ function initQuery() {
     }
 
     if (documentsIndexed === 0) {
-      setStatus(emptyState, 'No documents indexed yet. Upload a manual first.', 'error');
+      emptyState.classList.remove('hidden');
+      results.classList.add('hidden');
       return;
     }
 
     const topk = parseInt(topK.value || '4', 10);
+    const selectedDocId = docSelect.value || null;
     askBtn.disabled = true;
     const spinner = $('#spinner');
     spinner.classList.remove('hidden');
+    emptyState.classList.add('hidden');
 
     try {
-      const resp = await askQuestion(q, topk);
+      const resp = await askQuestion(q, topk, selectedDocId);
       renderResults(resp);
       results.classList.remove('hidden');
     } catch (err) {
@@ -222,4 +340,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initUploadZone();
   initQuery();
+  loadAndDisplayDocuments();
 });
